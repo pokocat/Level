@@ -6,14 +6,13 @@
         android:id="@+id/menu_calibrate"
         android:icon="@drawable/ic_calibrate"
         android:title="@string/calibrate"
-        app:showAsAction="always" />
+    />
 
     <item
         android:id="@+id/menu_ruler"
         android:icon="@drawable/ic_ruler"
-        android:checkable="true"
         android:title="@string/toggle_mode"
-        app:showAsAction="always"/>
+    />
 
     <item
         android:id="@+id/menu_settings"
@@ -21,9 +20,4 @@
         android:title="@string/preferences"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/menu_about"
-        android:icon="@drawable/ic_info"
-        android:title="GitHub"
-        app:showAsAction="never"/>
 </menu>

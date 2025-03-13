@@ -234,12 +234,8 @@ public class Level extends AppCompatActivity implements OrientationListener {
         } else if (item.getItemId() == R.id.menu_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
-        } else if (item.getItemId() == R.id.menu_about) {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/woheller69/level")));
-            recreate(); //fix strange action bar position when coming from ruler
-            return true;
         } else if (item.getItemId() == R.id.menu_ruler) {
-            showRuler(!item.isChecked());
+            showRuler(item.isChecked());
         }
         return false;
     }
@@ -362,7 +358,7 @@ public class Level extends AppCompatActivity implements OrientationListener {
 
     private void setupFloatingActionButton() {
         FloatingActionButton fab = findViewById(R.id.fab_menu);
-        
+
         // 设置初始位置在底部中间
         fab.post(() -> {
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
