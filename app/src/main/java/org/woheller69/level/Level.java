@@ -362,50 +362,41 @@ public class Level extends AppCompatActivity implements OrientationListener {
 
     private void setupFloatingActionButton() {
         FloatingActionButton fab = findViewById(R.id.fab_menu);
-
+        
         // 设置初始位置在底部中间
         fab.post(() -> {
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) fab.getLayoutParams();
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
             params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
             params.addRule(RelativeLayout.CENTER_HORIZONTAL);
-            params.bottomMargin = 50; // 距离底部的间距
+            params.bottomMargin = 50;
             fab.setLayoutParams(params);
         });
 
         // 添加触摸事件处理
         fab.setOnTouchListener(new View.OnTouchListener() {
-
-            private int initialX;
-            private int initialY;
-            private float initialTouchX;
-            private float initialTouchY;
+            private float dX, dY;
             private boolean isDragging = false;
 
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public boolean onTouch(View view, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        initialX = params.leftMargin;
-                        initialY = params.topMargin;
-                        initialTouchX = event.getRawX();
-                        initialTouchY = event.getRawY();
+                        dX = view.getX() - event.getRawX();
+                        dY = view.getY() - event.getRawY();
                         return true;
 
                     case MotionEvent.ACTION_MOVE:
                         isDragging = true;
-                        int deltaX = (int) (event.getRawX() - initialTouchX);
-                        int deltaY = (int) (event.getRawY() - initialTouchY);
-                        params.leftMargin = initialX + deltaX;
-                        params.topMargin = initialY + deltaY;
-                        params.rightMargin = -250;
-                        params.bottomMargin = -250;
-                        fab.setLayoutParams(params);
+                        view.setX(event.getRawX() + dX);
+                        view.setY(event.getRawY() + dY);
                         return true;
 
                     case MotionEvent.ACTION_UP:
                         if (!isDragging) {
-                            // 如果没有拖动，则处理点击事件
-                            PopupMenu popup = new PopupMenu(Level.this, v);
+                            PopupMenu popup = new PopupMenu(Level.this, view);
                             popup.getMenuInflater().inflate(R.menu.main, popup.getMenu());
                             popup.setOnMenuItemClickListener(Level.this::onOptionsItemSelected);
                             popup.show();
