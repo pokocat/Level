@@ -37,6 +37,9 @@ import org.woheller69.level.view.LevelView;
 import org.woheller69.level.view.RulerView;
 import org.woheller69.level.view.VerticalSeekBar;
 
+import android.widget.PopupMenu;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 /*
  *  This file is part of Level (an Android Bubble Level).
  *  <https://github.com/avianey/Level>
@@ -85,11 +88,19 @@ public class Level extends AppCompatActivity implements OrientationListener {
         super.onCreate(savedInstanceState);
         context = this;
         setContentView(R.layout.main);
+        // 隐藏 ActionBar
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().hide();
         }
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         levelView = findViewById(R.id.main_levelView);
+        
+        // 设置悬浮按钮
+        setupFloatingActionButton();
+        
+        // 默认显示 RulerView
+        showRuler(true);
+
         // sound
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -241,7 +252,7 @@ public class Level extends AppCompatActivity implements OrientationListener {
             float dpmm =  getDpmmCal(progress,coarseProgress);
 
             rulerView = new RulerView(this, dpmm, dpmm*25.4/32);
-            rulerView.setBackgroundColor(ContextCompat.getColor(this,R.color.silver));
+            rulerView.setBackgroundColor(ContextCompat.getColor(this,R.color.white));
             rulerLayout.addView(rulerView);
             levelView.setVisibility(View.INVISIBLE);
             setFullscreenMode();
@@ -280,7 +291,8 @@ public class Level extends AppCompatActivity implements OrientationListener {
     @Override
     protected void onPause() {
         super.onPause();
-        showRuler(false);
+        // 移除这行以保持 RulerView 状态
+        // showRuler(false);
         if (provider.isListening()) {
             provider.stopListening();
         }
@@ -345,5 +357,16 @@ public class Level extends AppCompatActivity implements OrientationListener {
                             View.SYSTEM_UI_FLAG_HIDE_NAVIGATION|
                             View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         }
+    }
+
+    private void setupFloatingActionButton() {
+        FloatingActionButton fab = findViewById(R.id.fab_menu);
+        fab.setOnClickListener(view -> {
+            PopupMenu popup = new PopupMenu(this, view);
+            popup.getMenuInflater().inflate(R.menu.main, popup.getMenu());
+            
+            popup.setOnMenuItemClickListener(this::onOptionsItemSelected);
+            popup.show();
+        });
     }
 }
